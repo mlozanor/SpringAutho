@@ -61,7 +61,7 @@ function DashboardCtrl($scope, $rootScope, $http, isAuthenticated, authService) 
 	$http({
 	  headers: authService.createAuthorizationTokenHeader(),
 	  method: 'GET',
-	  url: 'api/solicitud/all'
+	  url: 'api/solicitudPropia'
 	})
 		.then(function(res) {
 			setResponse(res, true);
