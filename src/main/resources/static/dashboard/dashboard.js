@@ -84,6 +84,20 @@ function DashboardCtrl($scope, $rootScope, $http, isAuthenticated, authService) 
 			setResponse(response, false);
 		});
 	}
+
+	$scope.createSolicitud = function() {
+	$http({
+	  headers: authService.createAuthorizationTokenHeader(),
+	  method: 'POST',
+	  url: 'api/solicitud/create'
+	})
+		.then(function(res) {
+			setResponse(res, true);
+		})
+		.catch(function(response) {
+			setResponse(response, false);
+		});
+	}
 }
 DashboardCtrl.resolve = {
 	isAuthenticated : function($q, $http, AuthService) {

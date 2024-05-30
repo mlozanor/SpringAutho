@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bfwg.model.Solicitud;
 import com.bfwg.service.SolicitudService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -35,6 +37,17 @@ public class SolicitudController {
     public List<Solicitud> loadAll() {
         return this.solicitudService.findAll();
     }
+
+    @GetMapping("/solicitud/create")
+    @PreAuthorize("hasRole('USER')")
+    public Solicitud createSolicitud(@RequestParam String tipo, @RequestParam String fecha) {
+        Solicitud solicitud = new Solicitud();
+        solicitud.setTipo(tipo);
+        solicitud.setFecha(fecha);
+        return this.solicitudService.save(solicitud);
+        
+    }
+    
 
   
     
