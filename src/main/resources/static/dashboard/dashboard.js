@@ -56,6 +56,34 @@ function DashboardCtrl($scope, $rootScope, $http, isAuthenticated, authService) 
 			setResponse(response, false);
 		});
 	}
+
+	$scope.getSolicitudInfo = function() {
+	$http({
+	  headers: authService.createAuthorizationTokenHeader(),
+	  method: 'GET',
+	  url: 'api/solicitud/all'
+	})
+		.then(function(res) {
+			setResponse(res, true);
+		})
+		.catch(function(response) {
+			setResponse(response, false);
+		});
+	}
+
+	$scope.getAllSolicitudInfo = function() {
+	$http({
+	  headers: authService.createAuthorizationTokenHeader(),
+	  method: 'GET',
+	  url: 'api/solicitud/all'
+	})
+		.then(function(res) {
+			setResponse(res, true);
+		})
+		.catch(function(response) {
+			setResponse(response, false);
+		});
+	}
 }
 DashboardCtrl.resolve = {
 	isAuthenticated : function($q, $http, AuthService) {

@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.List;
 
@@ -26,6 +27,9 @@ public class Solicitud {
 
     @OneToMany
     private List<Producto> productos;
+
+    @OneToOne
+    private User user;
     
     public Long getId() {
         return id;
@@ -57,6 +61,14 @@ public class Solicitud {
 
     public void setProductos(List<Producto> productos) {
         this.productos = productos;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
 

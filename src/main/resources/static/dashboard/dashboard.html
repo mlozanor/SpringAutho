@@ -11,7 +11,10 @@
 <p>Opciones de busqueda de informacion</p>
 <div style="margin-bottom: 10px;">
     <button type="button" class="btn btn-info" ng-click="getUserInfo()">infoUsuario</button>
-    <button type="button" class="btn btn-info" ng-click="getAllUserInfo()">todosUsuarios/</button>
+    <button type="button" class="btn btn-info" ng-click="getAllUserInfo()">todosUsuarios</button>
+    <button type="button" class="btn btn-info" ng-click="getSolicitudInfo()">infoSolicitud</button>
+    <button type="button" class="btn btn-info" ng-click="getAllSolicitudInfo()">todasSolicitudes</button>
+    
 </div>
 <div class="alert {{responseBoxClass}}" ng-show="serverResponse">
     <b>Server Response:</b>
