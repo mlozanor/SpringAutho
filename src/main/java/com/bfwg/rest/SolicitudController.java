@@ -1,6 +1,5 @@
 package com.bfwg.rest;
 
-import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.MediaType;
