@@ -5,105 +5,126 @@ angular.module('myApp.dashboard', ['ngRoute'])
   $routeProvider.when('/', {
     templateUrl: 'dashboard/dashboard.html',
     controller: DashboardCtrl,
-		resolve: DashboardCtrl.resolve
+    resolve: DashboardCtrl.resolve
   });
 }]);
 
 function DashboardCtrl($scope, $rootScope, $http, isAuthenticated, authService) {
-	$rootScope.authenticated = isAuthenticated;
+  $rootScope.authenticated = isAuthenticated;
 
-	$scope.serverResponse = '';
-	$scope.responseBoxClass = '';
+  $scope.serverResponse = '';
+  $scope.responseBoxClass = '';
 
-	var setResponse = function(res, success) {
-		$rootScope.authenticated = isAuthenticated;
-		if (success) {
-			$scope.responseBoxClass = 'alert-success';
-		} else {
-			$scope.responseBoxClass = 'alert-danger';
-		}
-		$scope.serverResponse = res;
-		$scope.serverResponse.data = JSON.stringify(res.data, null, 2);
+  var setResponse = function(res, success) {
+    $rootScope.authenticated = isAuthenticated;
+    if (success) {
+      $scope.responseBoxClass = 'alert-success';
+    } else {
+      $scope.responseBoxClass = 'alert-danger';
+    }
+    $scope.serverResponse = res;
+    $scope.serverResponse.data = JSON.stringify(res.data, null, 2);
+  }
+
+  if ($rootScope.authenticated) {
+    authService.getUser()
+    .then(function(response) {
+      $scope.user = response.data;
+    });
+  }
+
+  $scope.getUserInfo = function() {
+    authService.getUser()
+    .then(function(response) {
+      setResponse(response, true);
+    })
+    .catch(function(response) {
+      setResponse(response, false);
+    });
+  }
+
+  $scope.getAllUserInfo = function() {
+    // Verificar si el usuario tiene exactamente un rol
+    if ($scope.user.authorities.length === 1) {
+        alert('USTED NO ESTA AUTORIZADO PARA ACCEDER ESTA INFORMACION. SE NOTIFICARA AL ADMINISTRADOR'); // Alerta al hacer clic en el botón
+    }
+	else if ($scope.user.authorities.length === 2) {
+		alert('Cargando todos los Usuarios...'); // Alerta al hacer clic en el botón
 	}
 
-	if ($rootScope.authenticated) {
-		authService.getUser()
-		.then(function(response) {
-			$scope.user = response.data;
-		});
-	}
+    $http({
+        headers: authService.createAuthorizationTokenHeader(),
+        method: 'GET',
+        url: 'api/user/all'
+    })
+    .then(function(res) {
+        setResponse(res, true);
+    })
+    .catch(function(response) {
+        setResponse(response, false);
+    });
+}
 
-	$scope.getUserInfo = function() {
-		authService.getUser()
-		.then(function(response) {
-			setResponse(response, true);
-		})
-		.catch(function(response) {
-			setResponse(response, false);
-		});
-	}
 
-	$scope.getAllUserInfo = function() {
+  $scope.getSolicitudInfo = function() {
     $http({
       headers: authService.createAuthorizationTokenHeader(),
       method: 'GET',
-      url: 'api/user/all'
+      url: 'api/solicitudPropia'
     })
-		.then(function(res) {
-			setResponse(res, true);
-		})
-		.catch(function(response) {
-			setResponse(response, false);
-		});
+    .then(function(res) {
+      setResponse(res, true);
+    })
+    .catch(function(response) {
+      setResponse(response, false);
+    });
+  }
+
+  $scope.getAllSolicitudInfo = function() {
+    // Verificar si el usuario tiene exactamente un rol
+    if ($scope.user.authorities.length === 1) {
+        alert('USTED NO ESTA AUTORIZADO PARA ACCEDER ESTA INFORMACION. SE NOTIFICARA AL ADMINISTRADOR'); // Alerta al hacer clic en el botón
+
+	}
+	else if ($scope.user.authorities.length === 2) {
+		alert('Cargando todas las solicitudes...'); // Alerta al hacer clic en el botón
 	}
 
-	$scope.getSolicitudInfo = function() {
-	$http({
-	  headers: authService.createAuthorizationTokenHeader(),
-	  method: 'GET',
-	  url: 'api/solicitudPropia'
-	})
-		.then(function(res) {
-			setResponse(res, true);
-		})
-		.catch(function(response) {
-			setResponse(response, false);
-		});
-	}
-
-	$scope.getAllSolicitudInfo = function() {
-	$http({
-	  headers: authService.createAuthorizationTokenHeader(),
-	  method: 'GET',
-	  url: 'api/solicitud/all'
-	})
-		.then(function(res) {
-			setResponse(res, true);
-		})
-		.catch(function(response) {
-			setResponse(response, false);
-		});
-	}
+    $http({
+        headers: authService.createAuthorizationTokenHeader(),
+        method: 'GET',
+        url: 'api/solicitud/all'
+    })
+    .then(function(res) {
+        setResponse(res, true);
+    })
+    .catch(function(response) {
+        setResponse(response, false);
+    });
 
 	$scope.createSolicitud = function() {
-	$http({
-	  headers: authService.createAuthorizationTokenHeader(),
-	  method: 'POST',
-	  url: 'api/solicitud/create'
-	})
-		.then(function(res) {
-			setResponse(res, true);
+		$http({
+		  headers: authService.createAuthorizationTokenHeader(),
+		  method: 'POST',
+		  url: 'api/solicitud/create'
 		})
-		.catch(function(response) {
-			setResponse(response, false);
-		});
-	}
+			.then(function(res) {
+				setResponse(res, true);
+			})
+			.catch(function(response) {
+				setResponse(response, false);
+			});
+		}
 }
+
+
+}
+
 DashboardCtrl.resolve = {
-	isAuthenticated : function($q, $http, AuthService) {
-		var deferred = $q.defer();
-		var oldToken = AuthService.getJwtToken();
-		if (oldToken !== null) {
+  isAuthenticated: function($q, $http, AuthService) {
+    var deferred = $q.defer();
+    var oldToken = AuthService.getJwtToken();
+    if (oldToken !== null) {
       $http({
         headers: AuthService.createAuthorizationTokenHeader(),
         method: 'POST',
@@ -113,16 +134,15 @@ DashboardCtrl.resolve = {
         AuthService.setJwtToken(res.access_token);
         deferred.resolve(res.access_token !== null);
       })
-      .error(function(err){
+      .error(function(err) {
         AuthService.removeJwtToken();
-        deferred.resolve(false); // you could optionally pass error data here
+        deferred.resolve(false); // you could opcionalmente pass error data here
       });
-		} else {
+    } else {
       deferred.resolve(false);
-		}
-		return deferred.promise;
-	}
+    }
+    return deferred.promise;
+  }
 };
 
 DashboardCtrl.$inject = ['$scope', '$rootScope', '$http', 'isAuthenticated', 'AuthService'];
-
