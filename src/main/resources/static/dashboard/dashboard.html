@@ -1,26 +1,41 @@
-<h1>Banco De los Alpes</h1>
-<div ng-show="authenticated">
-	<p>Welcome <b>{{user.firstName}} {{user.lastName}}</b></p>
-	<p>Your authority(s)
-		<code ng-repeat="authority in user.authorities">{{authority.authority | limitTo:999:5}}</code>
-	</p>
-</div>
-<div  ng-show="!authenticated">
-	<p>Hi there, guest.</p>
-</div>
-<p>Opciones de busqueda de informacion</p>
-<div style="margin-bottom: 10px;">
-    <button type="button" class="btn btn-info" ng-click="getUserInfo()">infoUsuario</button>
-    <button type="button" class="btn btn-info" ng-click="getAllUserInfo()">todosUsuarios</button>
-    <button type="button" class="btn btn-info" ng-click="createSolicitud()">crearSolicitud</button>
-    <button type="button" class="btn btn-info" ng-click="getSolicitudInfo()">infoSolicitud</button>
-    <button type="button" class="btn btn-info" ng-click="getAllSolicitudInfo()">todasSolicitudes</button>
-    
-</div>
-<div class="alert {{responseBoxClass}}" ng-show="serverResponse">
-    <b>Server Response:</b>
-    <pre>Path: /{{serverResponse.config.url}}</pre>
-    <pre>Method: {{serverResponse.config.method}}</pre>
-    <pre>Status: {{serverResponse.status}}</pre>
-    <pre>Data: {{serverResponse.data}}</pre>
+<div>
+    <h1>Banco De los Alpes</h1>
+    <div ng-show="authenticated">
+        <p>Welcome <b>{{user.firstName}} {{user.lastName}}</b></p>
+        <p>Your authority(s)
+            <code ng-repeat="authority in user.authorities">{{authority.authority | limitTo:999:5}}</code>
+        </p>
+    </div>
+    <div  ng-show="!authenticated">
+        <p>Hi there, guest.</p>
+    </div>
+    <p>Opciones de busqueda de informacion</p>
+    <div style="margin-bottom: 10px;">
+        <button type="button" class="btn btn-info" ng-click="getUserInfo(); hideCreateSolicitudForm()">infoUsuario</button>
+        <button type="button" class="btn btn-info" ng-click="getAllUserInfo(); hideCreateSolicitudForm()">todosUsuarios</button>
+        <button type="button" class="btn btn-info" ng-click="showCreateSolicitudForm()">crearSolicitud</button>
+        <button type="button" class="btn btn-info" ng-click="getSolicitudInfo(); hideCreateSolicitudForm()">infoSolicitud</button>
+        <button type="button" class="btn btn-info" ng-click="getAllSolicitudInfo(); hideCreateSolicitudForm()">todasSolicitudes</button>
+    </div>
+    <div class="alert {{responseBoxClass}}" ng-show="serverResponse">
+        <b>Server Response:</b>
+        <pre>Path: /{{serverResponse.config.url}}</pre>
+        <pre>Method: {{serverResponse.config.method}}</pre>
+        <pre>Status: {{serverResponse.status}}</pre>
+        <pre>Data: {{serverResponse.data}}</pre>
+    </div>
+    <div ng-show="showCreateSolicitud">
+        <h2>Crear Solicitud</h2>
+        <form>
+            <div class="form-group">
+                <label for="tipo">Tipo:</label>
+                <input type="text" class="form-control" id="tipo" ng-model="solicitudTipo">
+            </div>
+            <div class="form-group">
+                <label for="fecha">Fecha:</label>
+                <input type="text" class="form-control" id="fecha" ng-model="solicitudFecha">
+            </div>
+            <button type="button" class="btn btn-primary" ng-click="createSolicitud(solicitudTipo, solicitudFecha); hideCreateSolicitudForm()">Crear Solicitud</button>
+        </form>
+    </div>
 </div>
